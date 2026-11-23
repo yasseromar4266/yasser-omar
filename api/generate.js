@@ -110,13 +110,21 @@ export default async function handler(req, res) {
   const prompt = String((req.body || {}).prompt || "").trim().slice(0, 600);
   if (prompt.length < 4) return res.status(400).json({ error: "short" });
 
-  // نجرب أكثر من موديل: إذا واحد زحمة أو بطيء نروح للي بعده، وكلها لازم تخلص قبل 55 ثانية
-  let lastErr; const errs = []; const start = Date.now();
-  for (const m of MODELS) {
-    const left = 55000 - (Date.now() - start);
-    if (left < 6000) break;
-    try { return res.status(200).json(clean(await ask(m, prompt, key, Math.min(25000, left - 1000)))); }
-    catch (e) { lastErr = e; errs.push(m + ": " + String(e?.message || e).slice(0, 120)); }
+  // نجرب أكثر من موديل، ونعيد المحاولة إذا Gemini زحمة، وكلها لازم تخلص قبل 55 ثانية
+  const errs = []; const start = Date.now(); let busy = false;
+  for (let round = 0; round < 4; round++) {
+    for (const m of MODELS) {
+      const left = 55000 - (Date.now() - start);
+      if (left < 6000) break;
+      try { return res.status(200).json(clean(await ask(m, prompt, key, Math.min(25000, left - 1000)))); }
+      catch (e) {
+        const msg = String(e?.message || e);
+        if (/high demand|overloaded|503|UNAVAILABLE|429|quota/i.test(msg) || e?.status === 503 || e?.status === 429) busy = true;
+        errs.push(m + ": " + msg.slice(0, 120));
+      }
+    }
+    await new Promise(r => setTimeout(r, 1500 + round * 1500));
   }
+  if (busy) return res.status(503).json({ error: "busy", detail: errs.slice(-3).join(" || ") });
   return res.status(502).json({ error: "ai", detail: errs.join(" || ") });
 }
