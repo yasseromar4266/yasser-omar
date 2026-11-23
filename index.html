@@ -91,6 +91,12 @@ header{padding:70px 0 40px}
 .s-blue .ruqaa{color:var(--white)}
 .s-night{background:var(--night);color:var(--yellow)}
 .s-night .ruqaa{color:#ffd9d2}
+.w-baghdad{background:linear-gradient(#0d1430 55%,#2a1d14)!important}
+.bmoon{position:absolute;top:22px;left:30px;width:34px;height:34px;border-radius:50%;background:#f4f1e4;box-shadow:0 0 30px 8px rgba(220,230,255,.35)}
+.barches{position:absolute;bottom:0;left:6%;right:6%;height:58%;display:flex;gap:0;background:#cfa873;padding:14px 10px 0}
+.barches i{flex:1;margin:0 6px;border-radius:50% 50% 0 0/40% 40% 0 0;background:linear-gradient(#ffd99a,#c98c45)}
+.blamp{position:absolute;bottom:0;right:10%;width:5px;height:70%;background:#1f2226}
+.blamp::after{content:"";position:absolute;top:-8px;left:-9px;width:23px;height:23px;border-radius:50%;background:#ffd8a0;box-shadow:0 0 26px 10px rgba(255,180,90,.5)}
 .s-yellow{background:var(--yellow);color:var(--night)}
 .s-yellow .ruqaa{color:var(--red)}
 .mini{width:74%;height:62%;margin-bottom:22px;background:var(--white);border-radius:8px;overflow:hidden;box-shadow:0 14px 26px -8px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:7px;padding-bottom:8px}
@@ -277,7 +283,10 @@ const PROJECTS = [
     goods:["مشاهدة جماعية","مايك","من الاستوديو"], link:"https://al-sitara.netlify.app" },
   { art:"nano", color:"s-white", title:"نانو", sub:"روبوت يحچي", en:"NANO · AI ROBOT",
     desc:"روبوت افتراضي يحچي وياك بالذكاء الاصطناعي، حلگه وإيديه تتحرك وهو يحچي.",
-    goods:["ذكاء اصطناعي","صوت","حركة"], link:"https://nano-three-theta.vercel.app" }
+    goods:["ذكاء اصطناعي","صوت","حركة"], link:"https://nano-three-theta.vercel.app" },
+  { art:"baghdad", color:"s-blue", title:"بغداد القديمة", sub:"جولة 3D بالليل", en:"OLD BAGHDAD · 3D WALK",
+    desc:"تتمشى بشارع الرشيد بالليل تحت الطاقات والشناشيل، تلف لشارع المتنبي بين بسطات الكتب ومقهى الشابندر، وتوصل للقشلة وتمثال المتنبي على دجلة. ونانو وياك يحچيلك حكاية كل مكان.",
+    goods:["3D","جولة بصوت نانو","بالتلفون والحاسبة"], link:"https://yasser-omar.vercel.app/baghdad/" }
 ];
 
 const pip = s => s.split("").map(c=>`<i class="${c==='1'?'':'o'}"></i>`).join("");
@@ -289,6 +298,7 @@ const ART = {
   stadium:`<div class="lights"><i></i><i></i><i></i></div><div class="pitch"></div><div class="ticket">مقعد ١٢ · بوابة ٣</div>`,
   disc:`<div class="rec"></div><div class="tonearm"></div>`,
   film:`<div class="screen"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l10.5-6.5z"/></svg></div><div class="seats"><i></i><i></i><i></i><i></i><i></i></div>`,
+  baghdad:`<div class="bmoon"></div><div class="barches"><i></i><i></i><i></i><i></i></div><div class="blamp"></div>`,
   sawwili:`<div class="mini"><div class="mbar"><i></i><i></i><i></i></div><div class="mhero"></div><div class="mrow"><i></i><i></i><i></i></div></div><div class="mtalk">سوّيلي موقع!</div>`,
   nano:`<div class="bubble">هلا بيك!</div><div class="robot"><div class="eyes"><i></i><i></i></div><div class="mouth"></div></div>`
 };
