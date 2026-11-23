@@ -58,6 +58,17 @@ button{font-family:inherit;cursor:pointer;border:0}
 .chip svg{width:17px;height:17px}
 .chip.on{background:var(--yellow);color:#1d1a2b;border-color:var(--yellow)}
 #stops b{color:var(--yellow)}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+#radio{width:212px;background:#3a2414;border-radius:12px;padding:8px;pointer-events:auto;box-shadow:0 10px 22px -8px rgba(0,0,0,.7),inset 0 0 0 2px #6b4020}
+.rtop{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--yellow);margin:0 2px 6px}
+.rdot{width:8px;height:8px;border-radius:50%;background:#5d636b}
+#radio.play .rdot{background:#4ade80;box-shadow:0 0 8px #4ade80}
+.rscreen{position:relative;width:196px;height:110px;border-radius:6px;overflow:hidden;background:#120b06}
+.rscreen iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#rMsg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:12px;color:#e9dcc4;padding:8px;line-height:1.5}
+.rbtns{display:flex;gap:6px;margin-top:6px}
+.rbtns button{flex:1;background:var(--paper);color:#2a1d14;font-size:12px;font-weight:700;padding:7px 4px;border-radius:8px}
+#radio.off .rscreen,#radio.off .rbtns{display:none}
 #map{width:110px;height:150px;border-radius:10px;background:rgba(13,20,48,.72);border:1px solid rgba(255,255,255,.16);pointer-events:none}
 
 #nano{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translate(-50%,140%);width:min(560px,calc(100% - 24px));
@@ -86,7 +97,7 @@ button{font-family:inherit;cursor:pointer;border:0}
 #tip.on{opacity:1}
 #end{position:fixed;inset:0;display:grid;place-items:center;padding:20px;z-index:15;background:rgba(13,20,48,.7);opacity:0;pointer-events:none;transition:opacity .6s}
 #end.on{opacity:1;pointer-events:auto}
-@media (max-width:520px){#map{width:80px;height:109px}.chip{padding:7px 11px;font-size:13px}.say p{font-size:15px;line-height:1.65}}
+@media (max-width:520px){#radio{width:150px}.rscreen{width:134px;height:76px}.rbtns button{font-size:11px;padding:6px 2px}#map{width:80px;height:109px}.chip{padding:7px 11px;font-size:13px}.say p{font-size:15px;line-height:1.65}}
 @media (prefers-reduced-motion:reduce){#nano{transition:none}.eyes i,#nano.talk .mouth{animation:none}}
 </style>
 </head>
@@ -115,9 +126,16 @@ button{font-family:inherit;cursor:pointer;border:0}
     <a class="chip" href="/" aria-label="رجوع لمشاريع ياسر عمر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>رجوع</a>
     <span class="chip" id="stops">المحطات <b>0</b>/8</span>
     <button class="chip" id="autoBtn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="13" cy="4" r="2"/><path d="M10.5 8.5l-3 2v4h2v-3l1.2-.8-1.7 9.3h2.1l1.2-5.5 2.2 2.2V22h2v-6.2l-2.3-2.3.7-3.2c1 1.2 2.4 1.9 4.1 1.9v-2c-1.4 0-2.5-.8-3.1-1.9l-1-1.7c-.5-.7-1.3-1.1-2.2-1L10.5 8.5z"/></svg>مشّيني</button>
-    <button class="chip on" id="soundBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>الصوت</button>
+    <button class="chip on" id="radioBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1zm12 3a3 3 0 100 6 3 3 0 000-6zM5 11v2h7v-2H5zm0 4v2h7v-2H5zM15 3.5L6 7h4.5l5.6-2.2z"/></svg>الراديو</button>
   </div>
-  <canvas id="map" width="220" height="300"></canvas>
+  <div class="side">
+    <canvas id="map" width="220" height="300"></canvas>
+    <div id="radio">
+      <div class="rtop"><span class="rdot"></span><b id="rName">راديو بغداد</b></div>
+      <div class="rscreen"><div id="ytp"></div><span id="rMsg">دا نشغّل الراديو...</span></div>
+      <div class="rbtns"><button id="rSta">محطة ثانية</button><button id="rNext">أغنية ثانية</button></div>
+    </div>
+  </div>
 </div>
 
 <div id="nano" aria-live="polite">
@@ -499,10 +517,7 @@ const POIS = [
 ];
 const done = new Set();
 
-/* ===== صوت نانو ===== */
-let sound = true, voice = null;
-const pickVoice = () => { const v = speechSynthesis?.getVoices?.() || []; voice = v.find(x => /ar[-_](IQ|SA|AE|KW)/i.test(x.lang)) || v.find(x => /^ar/i.test(x.lang)) || null; };
-if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+/* ===== حچي نانو (كتابة بس) ===== */
 let talk = null;
 function say(i) {
   const p = POIS[i]; done.add(i);
@@ -511,14 +526,8 @@ function say(i) {
   $("sayT").textContent = "نانو · " + p.t; $("sayP").textContent = "";
   $("nano").classList.add("on", "talk");
   const t = talk = { i, chars: 0, typed: false, spoken: false, until: performance.now() + Math.max(4500, p.s.length * 62) };
-  if (sound && voice) {
-    const u = new SpeechSynthesisUtterance(p.s); u.voice = voice; u.lang = voice.lang; u.rate = 1;
-    u.onend = u.onerror = () => { if (talk === t) t.spoken = true; };
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
-    t.until = performance.now() + p.s.length * 120;
-  }
 }
-function stopTalk() { if (!talk) return; talk = null; try { speechSynthesis.cancel(); } catch {} $("nano").classList.remove("talk"); }
+function stopTalk() { if (!talk) return; talk = null; $("nano").classList.remove("talk"); }
 function tickTalk(now) {
   if (!talk) return;
   const p = POIS[talk.i];
@@ -529,7 +538,55 @@ function tickTalk(now) {
   }
 }
 $("skip").onclick = () => { if (!talk) { $("nano").classList.remove("on"); return; } const i = talk.i; $("sayP").textContent = POIS[i].s; stopTalk(); if (i === 7) $("end").classList.add("on"); };
-$("soundBtn").onclick = () => { sound = !sound; $("soundBtn").classList.toggle("on", sound); if (!sound) try { speechSynthesis.cancel(); } catch {} };
+
+/* ===== راديو بغداد: أغاني قديمة من يوتيوب ===== */
+const YT_KEY = "AIzaSyBGHDVChlMSf7pKzUokLAnqZuZRMBE7m08";
+const STATIONS = [
+  { n: "ياس خضر", q: "ياس خضر اغاني قديمة", ids: ["5GsnliqjjQ4", "GBGSKVTdkE4", "QGOAAMOm7_E", "eR-wk6CPOT4", "P_OxRNRJ3EM"] },
+  { n: "ناظم الغزالي", q: "ناظم الغزالي اغاني", ids: ["UHxE0A0-IUc", "vM3t1wyFxuc", "4ohoc4ak1yQ", "83WQtxAuE5Y", "9TxFp2J26_U", "1gOZmUZ1DQc"] },
+  { n: "مقام عراقي", q: "مقام عراقي يوسف عمر", ids: ["MONOFBWg6ow", "K0j5_RKNpa0", "gqmLUCF1K3U", "57C9TRPhdb4", "FjTn67Mdpk0", "ny4JVMajMSg", "Vk1NyH-zIGU"] },
+  { n: "زهور حسين", q: "زهور حسين اغاني", ids: ["xOz4oL9oRtk", "b63zeZE0S3c", "WzmGq9PdmDU", "TPQ0uNt4JCU", "yq-TMu-ZPkU", "Km09Z579TEA", "cY9LvhgELlY"] },
+  { n: "تراث عربي", q: "فيروز اغاني قديمة", ids: ["j9F1G2lpbso", "dLhei4dcFXA", "0uWun4jIWro", "ndjuojYPTco", "gprx8jdCCzs"] },
+];
+const radio = { st: 0, list: [], i: 0, player: null, ready: false, on: true, vol: 60 };
+async function ytSearch(q) {
+  const u = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=20&q=${encodeURIComponent(q)}&key=${YT_KEY}`;
+  const r = await fetch(u); if (!r.ok) throw new Error("yt " + r.status);
+  const ids = (await r.json()).items.map(x => x.id && x.id.videoId).filter(Boolean);
+  for (let k = ids.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [ids[k], ids[j]] = [ids[j], ids[k]]; }
+  return ids;
+}
+const rMsg = t => { $("rMsg").textContent = t; $("rMsg").style.display = t ? "grid" : "none"; };
+function setStationName() { $("rName").textContent = "راديو بغداد · " + STATIONS[radio.st].n; }
+function radioPlaying(p) { $("radio").classList.toggle("play", p); }
+function makePlayer(id) {
+  radio.player = new YT.Player("ytp", { width: 196, height: 110, videoId: id,
+    playerVars: { playsinline: 1, controls: 0, rel: 0, modestbranding: 1, disablekb: 1 },
+    events: {
+      onReady: () => { radio.ready = true; rMsg(""); radio.player.setVolume(radio.vol); if (started && radio.on) radio.player.playVideo(); },
+      onStateChange: e => { radioPlaying(e.data === 1); if (e.data === 1) radio.errs = 0; if (e.data === 0) nextSong(); },
+      onError: () => { if (++radio.errs > radio.list.length) return rMsg("هالمحطة ما تشتغل هسه، جرب محطة ثانية"); nextSong(); },
+    } });
+}
+function nextSong() { if (!radio.list.length || !radio.ready) return; rMsg(""); radio.i = (radio.i + 1) % radio.list.length; radio.player.loadVideoById(radio.list[radio.i]); }
+async function loadStation(play) {
+  setStationName();
+  try {
+    const stn = STATIONS[radio.st];
+    radio.list = await ytSearch(stn.q).catch(() => [...stn.ids].sort(() => Math.random() - .5)); radio.i = 0; radio.errs = 0;
+    if (!radio.list.length) return rMsg("ما لگيت أغاني هسه");
+    if (!radio.player) { if (window.YT && YT.Player) makePlayer(radio.list[0]); else window.onYouTubeIframeAPIReady = () => makePlayer(radio.list[0]); }
+    else if (play) radio.player.loadVideoById(radio.list[0]); else radio.player.cueVideoById(radio.list[0]);
+  } catch (e) { rMsg("الراديو ما اشتغل هسه"); }
+}
+const yts = document.createElement("script"); yts.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(yts);
+loadStation(false);
+$("rSta").onclick = () => { radio.st = (radio.st + 1) % STATIONS.length; loadStation(true); };
+$("rNext").onclick = () => nextSong();
+$("radioBtn").onclick = () => {
+  radio.on = !radio.on; $("radioBtn").classList.toggle("on", radio.on); $("radio").classList.toggle("off", !radio.on);
+  if (radio.ready) radio.on ? radio.player.playVideo() : radio.player.pauseVideo();
+};
 
 /* ===== التحكم ===== */
 const me = { x: 0, z: 9, yaw: 0, pitch: 0, bob: 0 };
@@ -637,7 +694,7 @@ addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; cam
 
 function start(withAuto) {
   started = true;
-  try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch {}
+  if (radio.ready && radio.on) { radio.player.setVolume(radio.vol); radio.player.playVideo(); }
   $("intro").classList.add("off"); $("hud").classList.add("on");
   me.yaw = 0; me.pitch = 0;
   if (withAuto) setAuto(true);
