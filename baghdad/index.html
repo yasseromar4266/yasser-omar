@@ -73,7 +73,8 @@ button{font-family:inherit;cursor:pointer;border:0}
 
 #nano{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translate(-50%,140%);width:min(560px,calc(100% - 24px));
   display:flex;gap:12px;align-items:flex-start;background:var(--paper);color:#2a1d14;border-radius:16px;padding:14px 14px 14px 16px;z-index:12;
-  box-shadow:0 18px 40px -10px rgba(0,0,0,.7);transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
+  box-shadow:0 18px 40px -10px rgba(0,0,0,.7);transition:transform .45s cubic-bezier(.2,.9,.3,1.2);pointer-events:none}
+#skip{pointer-events:auto}
 #nano.on{transform:translate(-50%,0)}
 .head{flex:0 0 54px;height:48px;background:#fff;border-radius:16px;position:relative;box-shadow:inset 0 -4px 0 #dfe3ee,0 4px 10px rgba(23,63,158,.3);margin-top:2px}
 .head::before{content:"";position:absolute;top:-9px;left:50%;width:4px;height:9px;margin-left:-2px;background:#9aa3bd}
@@ -89,9 +90,15 @@ button{font-family:inherit;cursor:pointer;border:0}
 .say p{margin:0;font-size:16px;line-height:1.75;min-height:2em}
 #skip{flex:0 0 auto;align-self:flex-end;background:#1d1a2b;color:var(--yellow);font-size:13px;font-weight:700;padding:7px 12px;border-radius:9px}
 
-#joy{position:fixed;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;z-index:9;pointer-events:none;
+#joy{position:fixed;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;z-index:13;pointer-events:none;
   background:rgba(251,250,245,.12);border:2px solid rgba(251,250,245,.35);display:none}
 #joy i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(243,195,22,.85);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+#joyHint{position:fixed;left:26px;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 10px);width:104px;height:104px;border-radius:50%;z-index:9;pointer-events:none;
+  border:2px dashed rgba(251,250,245,.45);background:rgba(13,20,48,.35);display:none;transition:opacity .3s}
+#joyHint i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(243,195,22,.55)}
+#joyHint span{position:absolute;top:-24px;left:0;right:0;text-align:center;font-size:12px;font-weight:700;color:#fbfaf5;text-shadow:0 1px 3px #000}
+body.walking #joyHint{display:block}
+body.talking #joyHint{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 200px)}
 #tip{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:8;font-size:13px;color:#e4e8f6;
   background:rgba(13,20,48,.6);padding:7px 14px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .5s;pointer-events:none}
 #tip.on{opacity:1}
@@ -144,6 +151,7 @@ button{font-family:inherit;cursor:pointer;border:0}
   <button id="skip">تخطّى</button>
 </div>
 <div id="joy"><i></i></div>
+<div id="joyHint"><i></i><span>امشي</span></div>
 <div id="tip"></div>
 
 <div id="end">
@@ -518,13 +526,13 @@ const POIS = [
 const done = new Set();
 
 /* ===== حچي نانو (كتابة بس) ===== */
-let talk = null;
+let talk = null, hideT = 0;
 function say(i) {
   const p = POIS[i]; done.add(i);
   $("stops").innerHTML = `المحطات <b>${done.size}</b>/8`;
   if (talk) stopTalk();
   $("sayT").textContent = "نانو · " + p.t; $("sayP").textContent = "";
-  $("nano").classList.add("on", "talk");
+  $("nano").classList.add("on", "talk"); document.body.classList.add("talking"); clearTimeout(hideT);
   const t = talk = { i, chars: 0, typed: false, spoken: false, until: performance.now() + Math.max(4500, p.s.length * 62) };
 }
 function stopTalk() { if (!talk) return; talk = null; $("nano").classList.remove("talk"); }
@@ -534,7 +542,8 @@ function tickTalk(now) {
   if (!talk.typed) { talk.chars += 1.4; $("sayP").textContent = p.s.slice(0, talk.chars | 0); if (talk.chars >= p.s.length) talk.typed = true; }
   if (talk.typed && (talk.spoken || now > talk.until) && !talk.finishing) {
     talk.finishing = true; $("nano").classList.remove("talk");
-    const t = talk; setTimeout(() => { if (talk === t) { talk = null; if (t.i === 7) setTimeout(() => $("end").classList.add("on"), 900); } }, 900);
+    const t = talk; hideT = setTimeout(() => { if (!talk) { $("nano").classList.remove("on"); document.body.classList.remove("talking"); } }, 7000);
+    setTimeout(() => { if (talk === t) { talk = null; if (t.i === 7) setTimeout(() => $("end").classList.add("on"), 900); } }, 900);
   }
 }
 $("skip").onclick = () => { if (!talk) { $("nano").classList.remove("on"); return; } const i = talk.i; $("sayP").textContent = POIS[i].s; stopTalk(); if (i === 7) $("end").classList.add("on"); };
@@ -598,9 +607,10 @@ $("autoBtn").onclick = () => setAuto(!auto);
 addEventListener("keydown", e => { keys[e.code] = true; if (/Arrow|Key[WASD]/.test(e.code) && auto) setAuto(false); });
 addEventListener("keyup", e => { keys[e.code] = false; });
 const cvs = $("c");
-cvs.addEventListener("pointerdown", e => {
-  if (!started) return;
-  if (TOUCH && e.clientX < innerWidth * .5 && e.clientY > innerHeight * .35 && !joy) {
+addEventListener("pointerdown", e => {
+  if (!started || e.target.closest("button,a,#radio,#intro,#end")) return;
+  if (TOUCH && e.clientX < innerWidth * .55 && e.clientY > innerHeight * .3 && !joy) {
+    e.preventDefault();
     joy = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: 0, dy: 0 };
     Object.assign($("joy").style, { display: "block", left: e.clientX + "px", top: e.clientY + "px" });
     if (auto) setAuto(false);
@@ -693,7 +703,7 @@ function step() {
 addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.fov = fovFor(); camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 
 function start(withAuto) {
-  started = true;
+  started = true; if (TOUCH) document.body.classList.add("walking");
   if (radio.ready && radio.on) { radio.player.setVolume(radio.vol); radio.player.playVideo(); }
   $("intro").classList.add("off"); $("hud").classList.add("on");
   me.yaw = 0; me.pitch = 0;
