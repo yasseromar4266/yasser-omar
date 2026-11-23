@@ -239,6 +239,10 @@ footer span{direction:ltr;display:inline-block;background:rgba(255,253,247,.7);p
   </div>
 </section>
 
+<section id="featured">
+  <div class="street"><div class="shops" id="shops2"></div></div>
+</section>
+
 <section id="contact">
   <div class="street">
     <div class="contact-row" id="contactRow"></div>
@@ -309,7 +313,7 @@ PROJECTS.forEach(p=>{
       ${p.link ? `<a class="door" href="${p.link}" target="_blank" rel="noopener">${p.demo?"جرّب النسخة التجريبية":"افتح المشروع"} ${arrow}</a>`
                : `<span class="door soon">الرابط قريباً</span>`}
     </div>`;
-  shops.appendChild(el);
+  (p.art==="sawwili" ? document.getElementById("shops2") : shops).appendChild(el);
 });
 
 /* ===== الخدمات ===== */
