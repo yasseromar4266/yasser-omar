@@ -266,6 +266,9 @@ const CONTACT = {
 };
 
 const PROJECTS = [
+  { art:"baghdad", color:"s-blue", title:"بغداد القديمة", sub:"جولة 3D بالليل", en:"OLD BAGHDAD · 3D WALK",
+    desc:"تتمشى بشارع الرشيد بالليل تحت الطاقات والشناشيل، تلف لشارع المتنبي بين بسطات الكتب ومقهى الشابندر، وتوصل للقشلة وتمثال المتنبي على دجلة. ونانو وياك يحچيلك حكاية كل مكان.",
+    goods:["3D","جولة بصوت نانو","بالتلفون والحاسبة"], link:"https://yasser-omar.vercel.app/baghdad/", cta:"ادخل الجولة" },
   { art:"sawwili", color:"s-yellow", title:"سوّيلي موقع", sub:"موقعك بثواني", en:"SAWWILI · AI SITE MAKER",
     desc:"احچيله عن محلك بالعراقي، كتابة أو بالمايك، وخلال ثواني يطلعلك موقع كامل: اسم، ألوان، أقسام، أسعار، وزر واتساب. جربه بنفسك وشوف شكل موقع محلك.",
     goods:["ذكاء اصطناعي","بالمايك","جربه هسه"], link:"https://yasser-omar.vercel.app/sawwili/" },
@@ -283,10 +286,8 @@ const PROJECTS = [
     goods:["مشاهدة جماعية","مايك","من الاستوديو"], link:"https://al-sitara.netlify.app" },
   { art:"nano", color:"s-white", title:"نانو", sub:"روبوت يحچي", en:"NANO · AI ROBOT",
     desc:"روبوت افتراضي يحچي وياك بالذكاء الاصطناعي، حلگه وإيديه تتحرك وهو يحچي.",
-    goods:["ذكاء اصطناعي","صوت","حركة"], link:"https://nano-three-theta.vercel.app" },
-  { art:"baghdad", color:"s-blue", title:"بغداد القديمة", sub:"جولة 3D بالليل", en:"OLD BAGHDAD · 3D WALK",
-    desc:"تتمشى بشارع الرشيد بالليل تحت الطاقات والشناشيل، تلف لشارع المتنبي بين بسطات الكتب ومقهى الشابندر، وتوصل للقشلة وتمثال المتنبي على دجلة. ونانو وياك يحچيلك حكاية كل مكان.",
-    goods:["3D","جولة بصوت نانو","بالتلفون والحاسبة"], link:"https://yasser-omar.vercel.app/baghdad/" }
+    goods:["ذكاء اصطناعي","صوت","حركة"], link:"https://nano-three-theta.vercel.app" }
+
 ];
 
 const pip = s => s.split("").map(c=>`<i class="${c==='1'?'':'o'}"></i>`).join("");
@@ -320,7 +321,7 @@ PROJECTS.forEach(p=>{
     <div class="notice"><span class="tape"></span>
       <p>${p.desc}</p>
       <ul class="goods">${p.goods.map(g=>`<li>${g}</li>`).join("")}</ul>
-      ${p.link ? `<a class="door" href="${p.link}" target="_blank" rel="noopener">${p.demo?"جرّب النسخة التجريبية":"افتح المشروع"} ${arrow}</a>`
+      ${p.link ? `<a class="door" href="${p.link}" target="_blank" rel="noopener">${p.cta || (p.demo?"جرّب النسخة التجريبية":"افتح المشروع")} ${arrow}</a>`
                : `<span class="door soon">الرابط قريباً</span>`}
     </div>`;
   (p.art==="sawwili" ? document.getElementById("shops2") : shops).appendChild(el);
