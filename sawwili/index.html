@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سوّيلي موقع · ياسر عمر</title>
+<meta name="description" content="احچيلي عن محلك، وخلال ثواني تشوف موقعه جاهز.">
+<meta name="theme-color" content="#c98b4a">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="سوّيلي موقع 🪄 احچيلي عن محلك وشوف موقعه">
+<meta property="og:description" content="اكتب أو احچي عن محلك بالعراقي، وخلال ثواني تشوف موقعه جاهز.">
+<meta property="og:url" content="https://yasser-omar.vercel.app/sawwili/">
+<meta property="og:image" content="https://yasser-omar.vercel.app/sawwili/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brick:#c98b4a; --ink:#1c1410; --paper:#fffdf7;
+  --green:#0f6b45; --red:#b8261d; --cobalt:#173f9e; --yellow:#f3c316; --white:#fbfaf5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+::selection{background:var(--yellow);color:var(--ink)}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:6px}
+body{font-family:"Readex Pro",system-ui,sans-serif;color:var(--ink);line-height:1.7;min-height:100vh;overflow-x:hidden;
+  background-color:var(--brick);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Cg fill='none' stroke='%23e2c08f' stroke-width='3' opacity='.75'%3E%3Cpath d='M0 1.5h96M0 29.5h96M48 1.5v28M0 29.5v26.5M96 29.5v26.5'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(180deg,rgba(255,220,160,.28),transparent 30%,rgba(90,40,10,.18) 70%,rgba(90,40,10,.3));
+  padding-bottom:env(safe-area-inset-bottom)}
+button,textarea{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+.back{display:inline-block;margin-top:18px;background:var(--paper);color:var(--ink);text-decoration:none;font-weight:600;font-size:.9rem;padding:6px 14px;border-radius:20px;box-shadow:0 6px 12px -8px rgba(40,15,0,.6)}
+
+/* اللافتة */
+.sign{position:relative;border-radius:10px;padding:22px 30px;text-align:center;max-width:680px;margin:56px auto 0;
+  background:var(--cobalt);color:var(--yellow);
+  box-shadow:0 18px 30px -12px rgba(40,15,0,.55), inset 0 0 0 5px rgba(255,255,255,.9), inset 0 0 0 9px currentColor;transform-origin:50% -40px}
+.sign .screw{position:absolute;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#eee,#777)}
+.sign .screw:nth-child(1){top:14px;right:16px}.sign .screw:nth-child(2){top:14px;left:16px}
+.sign .screw:nth-child(3){bottom:14px;right:16px}.sign .screw:nth-child(4){bottom:14px;left:16px}
+.wires{position:absolute;top:-46px;left:18%;right:18%;height:46px;pointer-events:none}
+.wires::before,.wires::after{content:"";position:absolute;top:0;width:2px;height:100%;background:#3a2a1e}
+.wires::before{right:0}.wires::after{left:0}
+.sign h1{font-family:"Lalezar";font-weight:400;font-size:clamp(2.6rem,9vw,4.4rem);line-height:1.15}
+.sign p{color:var(--white);font-weight:500;margin-top:4px}
+
+/* ورقة الطلب */
+.desk{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;margin:40px auto 0;max-width:760px}
+.paper{background:var(--paper);border-radius:4px;padding:26px 24px 22px;position:relative;box-shadow:0 18px 30px -14px rgba(40,15,0,.65)}
+.tape{position:absolute;width:76px;height:22px;background:rgba(243,195,22,.75);top:-11px;left:50%;transform:translateX(-50%) rotate(-3deg)}
+.paper h2{font-family:"Lalezar";font-weight:400;font-size:1.6rem}
+.paper .lead{color:#5a4636;margin-bottom:14px}
+.box{position:relative}
+textarea{width:100%;min-height:118px;resize:vertical;border:2px solid #dcc9a6;border-radius:10px;padding:12px 56px 12px 14px;font-size:1.05rem;background:#fff}
+textarea:focus{outline:none;border-color:var(--red)}
+.mic{position:absolute;left:10px;top:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--ink);color:var(--yellow);display:grid;place-items:center;cursor:pointer}
+.mic svg{width:20px;height:20px}
+.mic.on{background:var(--red);color:#fff;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.examples{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.examples button{border:2px solid #dcc9a6;background:#fff;border-radius:20px;padding:5px 12px;font-size:.85rem;cursor:pointer}
+.examples button:hover{border-color:var(--red)}
+.go{margin-top:16px;width:100%;border:0;border-radius:12px;background:var(--red);color:var(--white);font-family:"Lalezar";font-size:1.6rem;padding:12px;cursor:pointer;box-shadow:inset 0 -5px 0 rgba(0,0,0,.2);transition:transform .15s}
+.go:active{transform:translateY(2px)}
+.go:disabled{opacity:.6;cursor:wait}
+.err{color:var(--red);font-weight:600;font-size:.9rem;min-height:1.4em;margin-top:8px}
+
+/* البناء */
+.building{display:none;text-align:center;padding:26px 10px}
+.building.on{display:block}
+.blocks{display:flex;justify-content:center;gap:8px;height:70px;align-items:flex-end}
+.blocks i{width:26px;border-radius:4px;animation:stack 1.2s ease-in-out infinite}
+.blocks i:nth-child(1){background:var(--red);height:30px}
+.blocks i:nth-child(2){background:var(--yellow);height:50px;animation-delay:.15s}
+.blocks i:nth-child(3){background:var(--cobalt);height:40px;animation-delay:.3s}
+.blocks i:nth-child(4){background:var(--green);height:60px;animation-delay:.45s}
+@keyframes stack{50%{transform:translateY(-14px)}}
+.building p{font-family:"Lalezar";font-size:1.3rem;margin-top:12px}
+
+/* المعاينة */
+.result{display:none;margin:34px auto 0;max-width:1000px}
+.result.on{display:block}
+.bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin-bottom:18px}
+.toggle{display:flex;background:var(--paper);border-radius:12px;padding:4px;box-shadow:0 8px 14px -8px rgba(40,15,0,.6)}
+.toggle button{border:0;background:none;border-radius:9px;padding:7px 14px;font-weight:600;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--yellow)}
+.frame{margin:0 auto;background:#1c1410;padding:14px;border-radius:38px;box-shadow:0 30px 50px -20px rgba(40,15,0,.8);transition:max-width .4s,border-radius .4s}
+.frame.phone{max-width:400px}
+.frame.desk{max-width:1000px;border-radius:14px;padding:30px 10px 10px;position:relative}
+.frame.desk::before{content:"";position:absolute;top:11px;right:16px;width:46px;height:9px;background:radial-gradient(circle,#ff5f57 0 4px,transparent 4.5px) 0 0/15px 9px repeat-x}
+.frame iframe{width:100%;height:720px;border:0;border-radius:26px;background:#fff;display:block}
+.frame.desk iframe{border-radius:6px;height:680px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+.btn{font-family:"Lalezar";font-size:1.3rem;border:0;border-radius:12px;padding:10px 24px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+.btn svg{width:22px;height:22px}
+.btn.wa{background:#128c4a;color:#fff}
+.btn.again{background:var(--yellow);color:var(--ink)}
+.btn.edit{background:var(--paper);color:var(--ink)}
+.note{text-align:center;color:#3b2414;font-weight:500;font-size:.9rem;margin-top:14px}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:760px;margin:40px auto 60px}
+.how div{background:rgba(255,253,247,.9);border-radius:6px;padding:16px;box-shadow:0 10px 16px -10px rgba(40,15,0,.5)}
+.how b{font-family:"Lalezar";font-size:1.25rem;display:block;color:var(--red)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/">← مشاريع ياسر عمر</a>
+
+  <div class="sign" id="sign">
+    <span class="screw"></span><span class="screw"></span><span class="screw"></span><span class="screw"></span>
+    <div class="wires"></div>
+    <h1>سوّيلي موقع</h1>
+    <p>احچيلي عن محلك، وخلال ثواني تشوف موقعه جاهز</p>
+  </div>
+
+  <div class="desk">
+    <div class="paper" id="askPaper">
+      <span class="tape"></span>
+      <h2>شنو محلك؟</h2>
+      <p class="lead">اكتب أو اضغط المايك واحچي: شنو تبيع أو تسوي، وين محلك، وشنو اسمه.</p>
+      <div class="box">
+        <textarea id="prompt" maxlength="600" placeholder="مثلاً: عندي محل حلويات بالمنصور اسمه حلويات أبو علي، نسوي بقلاوة وكليجة وزلابية"></textarea>
+        <button class="mic" id="mic" type="button" aria-label="احچي بالمايك" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      </div>
+      <div class="examples" id="examples"></div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="go" id="go">سوّي الموقع</button>
+      <div class="building" id="building"><div class="blocks"><i></i><i></i><i></i><i></i></div><p id="stepTxt">دا أفكر بمحلك...</p></div>
+    </div>
+  </div>
+
+  <section class="result" id="result">
+    <div class="bar">
+      <div class="toggle" role="group" aria-label="حجم المعاينة">
+        <button type="button" data-v="phone" aria-pressed="true">تلفون</button>
+        <button type="button" data-v="desk" aria-pressed="false">حاسبة</button>
+      </div>
+    </div>
+    <div class="frame phone" id="frame"><iframe id="preview" title="معاينة الموقع" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></div>
+    <div class="actions">
+      <a class="btn wa" id="want" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.2 1.4z"/></svg>أريد هالموقع</a>
+      <button class="btn again" id="again" type="button">سوّي شكل ثاني</button>
+      <button class="btn edit" id="edit" type="button">عدّل الوصف</button>
+    </div>
+    <p class="note">هاي نسخة أولية سوّاها الذكاء الاصطناعي. إذا عجبتك، ياسر يكملها بصورك وأسعارك الحقيقية ويطلعلك رابط.</p>
+  </section>
+
+  <div class="how">
+    <div><b>١. احچي</b>اكتب أو احچي بالمايك عن محلك بالعراقي.</div>
+    <div><b>٢. شوف</b>خلال ثواني يطلعلك موقع كامل لمحلك.</div>
+    <div><b>٣. اطلبه</b>إذا عجبك، اضغط "أريد هالموقع" وتوصلني رسالة.</div>
+  </div>
+</div>
+
+<script>
+const WHATSAPP = "9647881149368";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const EXAMPLES = [
+  "عندي محل حلويات بالمنصور اسمه حلويات أبو علي، نسوي بقلاوة وكليجة وزلابية",
+  "صالون حلاقة رجالي بالكرادة، حلاقة وتنظيف بشرة وتصفيف",
+  "كافيه صغير بالجادرية للطلاب، قهوة وعصائر وكيك",
+  "محل ملابس أطفال بزيونة، ملابس عيد ومدارس",
+  "مدرس رياضيات للسادس الإعدادي بالبصرة، دروس خصوصية وأونلاين"
+];
+const LABELS = ["حلويات بالمنصور","صالون حلاقة","كافيه للطلاب","ملابس أطفال","مدرس رياضيات"];
+$("examples").innerHTML = LABELS.map((e,i)=>`<button type="button" data-i="${i}">${esc(e)}</button>`).join("");
+$("examples").onclick = e => { const b = e.target.closest("button"); if (!b) return; $("prompt").value = EXAMPLES[+b.dataset.i]; $("err").textContent=""; };
+
+/* ===== المايك (الحچي بالعراقي) ===== */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR){
+  $("mic").hidden = false;
+  let rec = null, base = "";
+  $("mic").onclick = () => {
+    if (rec){ rec.stop(); return; }
+    rec = new SR(); rec.lang = "ar-IQ"; rec.interimResults = true; rec.continuous = true;
+    base = $("prompt").value ? $("prompt").value + " " : "";
+    rec.onresult = ev => { let t=""; for (const r of ev.results) t += r[0].transcript; $("prompt").value = base + t; };
+    rec.onend = () => { rec = null; $("mic").classList.remove("on"); };
+    rec.onerror = () => { $("err").textContent = "ما كدرت أسمعك. تأكد إنك سمحت للمايك، أو اكتب."; };
+    rec.start(); $("mic").classList.add("on");
+  };
+}
+
+/* ===== رسم الموقع المولّد ===== */
+const FONTS = {
+  lalezar:["Lalezar","Lalezar"], elmessiri:["El Messiri","El+Messiri:wght@600;700"], rubik:["Rubik","Rubik:wght@600;800"],
+  amiri:["Amiri","Amiri:wght@700"], marhey:["Marhey","Marhey:wght@600;700"], tajawal:["Tajawal","Tajawal:wght@700;800"]
+};
+function art(seed, p){
+  // رسمة بسيطة بدل الصورة: أشكال بلون المحل
+  let h = 0; for (const c of seed) h = (h*31 + c.charCodeAt(0)) >>> 0;
+  const k = h % 4, a = p.accent, s = p.surface;
+  if (k===0) return `radial-gradient(circle at 70% 65%, ${a} 0 22%, transparent 23%), radial-gradient(circle at 30% 30%, ${a}33 0 30%, transparent 31%), ${s}`;
+  if (k===1) return `repeating-linear-gradient(135deg, ${a}22 0 12px, transparent 12px 24px), linear-gradient(${a}55, ${a}11)`;
+  if (k===2) return `conic-gradient(from 45deg at 50% 60%, ${a} 0 25%, ${a}55 0 50%, ${a}22 0 75%, ${a}88 0), ${s}`;
+  return `linear-gradient(160deg, transparent 55%, ${a} 55%), radial-gradient(circle at 75% 30%, ${a}66 0 18%, transparent 19%), ${s}`;
+}
+function render(sp){
+  const p = sp.palette, [ff, fq] = FONTS[sp.font] || FONTS.tajawal;
+  const wa = `https://wa.me/?text=${encodeURIComponent("هلو، أريد أطلب من " + sp.name)}`;
+  const hl = (sp.highlights||[]).map(h=>`<li>${esc(h)}</li>`).join("");
+  let body = "";
+  if (sp.kind === "restaurant"){
+    body = (sp.sections||[]).map(sec=>`<section class="menu"><h2>${esc(sec.title)}</h2>${(sec.items||[]).map(it=>`
+      <div class="dish"><div><b>${esc(it.name)}</b>${it.desc?`<small>${esc(it.desc)}</small>`:""}</div><span class="dots"></span><span class="price">${esc(it.price||"")}</span></div>`).join("")}</section>`).join("");
+  } else if (sp.kind === "service"){
+    body = (sp.sections||[]).map(sec=>`<section><h2>${esc(sec.title)}</h2><div class="svc">${(sec.items||[]).map((it,i)=>`
+      <div class="card"><span class="num">${i+1}</span><b>${esc(it.name)}</b>${it.desc?`<p>${esc(it.desc)}</p>`:""}${it.price?`<em>${esc(it.price)}</em>`:""}</div>`).join("")}</div></section>`).join("");
+  } else {
+    body = (sp.sections||[]).map(sec=>`<section><h2>${esc(sec.title)}</h2><div class="grid">${(sec.items||[]).map(it=>`
+      <div class="prod"><div class="pic" style="background:${art(it.name,p)}"></div><b>${esc(it.name)}</b>${it.desc?`<p>${esc(it.desc)}</p>`:""}<div class="row"><em>${esc(it.price||"")}</em><a href="${wa}" target="_blank">اطلب</a></div></div>`).join("")}</div></section>`).join("");
+  }
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=${fq}&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tajawal,sans-serif;background:${p.bg};color:${p.ink};line-height:1.7}
+h1,h2,b.brand{font-family:"${ff}",Tajawal,serif;font-weight:700}
+a{color:inherit}
+header{padding:22px 20px 0;display:flex;justify-content:space-between;align-items:center;max-width:980px;margin:auto}
+header b.brand{font-size:1.25rem}
+header a{background:${p.accent};color:${p.accentInk};text-decoration:none;padding:7px 16px;border-radius:30px;font-weight:700;font-size:.9rem}
+.hero{max-width:980px;margin:auto;padding:44px 20px 30px;display:grid;gap:18px}
+.hero .tag{color:${p.accent};font-weight:700;letter-spacing:.02em}
+.hero h1{font-size:clamp(2.4rem,10vw,4.4rem);line-height:1.1}
+.hero p{font-size:1.15rem;max-width:560px;opacity:.85}
+.hero .art{height:180px;border-radius:22px;background:${art(sp.name,p)}}
+.cta{display:inline-block;background:${p.accent};color:${p.accentInk};text-decoration:none;padding:13px 26px;border-radius:14px;font-weight:700;font-size:1.1rem;justify-self:start}
+ul.hl{list-style:none;display:flex;flex-wrap:wrap;gap:8px;max-width:980px;margin:0 auto;padding:0 20px}
+ul.hl li{background:${p.surface};border:1.5px solid ${p.accent}55;padding:6px 14px;border-radius:30px;font-weight:600;font-size:.92rem}
+main{max-width:980px;margin:auto;padding:20px}
+section{margin-top:34px}
+section h2{font-size:1.7rem;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.prod{background:${p.surface};border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:4px;box-shadow:0 6px 18px -12px #0006}
+.prod .pic{height:110px;border-radius:12px;margin-bottom:4px}
+.prod p{font-size:.85rem;opacity:.75;flex:1}
+.prod .row{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.prod em{font-style:normal;font-weight:700;color:${p.accent};font-size:.9rem}
+.prod .row a{background:${p.ink};color:${p.bg};text-decoration:none;font-size:.8rem;padding:3px 10px;border-radius:20px}
+.menu{background:${p.surface};border-radius:18px;padding:18px}
+.dish{display:flex;align-items:baseline;gap:8px;padding:9px 0;border-bottom:1px dashed ${p.ink}22}
+.dish:last-child{border:0}
+.dish small{display:block;font-size:.85rem;opacity:.7}
+.dish .dots{flex:1;border-bottom:2px dotted ${p.ink}33;transform:translateY(-4px)}
+.dish .price{font-weight:700;color:${p.accent};white-space:nowrap}
+.svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.card{background:${p.surface};border-radius:16px;padding:16px;position:relative;box-shadow:0 6px 18px -12px #0006}
+.card .num{position:absolute;top:12px;left:14px;width:30px;height:30px;border-radius:50%;background:${p.accent};color:${p.accentInk};display:grid;place-items:center;font-weight:700}
+.card b{display:block;font-size:1.1rem;padding-left:36px}
+.card p{font-size:.9rem;opacity:.75;margin-top:4px}
+.card em{display:inline-block;margin-top:8px;font-style:normal;font-weight:700;color:${p.accent}}
+.about{background:${p.accent};color:${p.accentInk};border-radius:22px;padding:24px;margin-top:40px;display:grid;gap:8px}
+.about h2{font-size:1.6rem}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+.info div{background:${p.surface};border-radius:16px;padding:14px}
+.info small{display:block;opacity:.65;font-size:.82rem}
+footer{text-align:center;padding:30px 20px;font-size:.85rem;opacity:.6}
+</style></head><body>
+<header><b class="brand">${esc(sp.name)}</b><a href="${wa}" target="_blank">${esc(sp.cta||"اطلب هسه")}</a></header>
+<div class="hero">
+  <span class="tag">${esc(sp.tagline)}</span>
+  <h1>${esc(sp.hero)}</h1>
+  <p>${esc(sp.about)}</p>
+  <a class="cta" href="${wa}" target="_blank">${esc(sp.cta||"اطلب هسه")}</a>
+  <div class="art"></div>
+</div>
+<ul class="hl">${hl}</ul>
+<main>${body}
+  <div class="about"><h2>ليش ${esc(sp.name)}؟</h2><p>${esc(sp.about)}</p></div>
+  <div class="info">
+    ${sp.area?`<div><small>وين محلنا</small><b>${esc(sp.area)}</b></div>`:""}
+    ${sp.hours?`<div><small>أوقات الدوام</small><b>${esc(sp.hours)}</b></div>`:""}
+    <div><small>للطلب والحجز</small><b><a href="${wa}" target="_blank">راسلنا بالواتساب</a></b></div>
+  </div>
+</main>
+<footer>${esc(sp.name)}${sp.name_en?" · "+esc(sp.name_en):""} · نسخة تجريبية</footer>
+</body></html>`;
+}
+
+/* ===== الطلب من الذكاء ===== */
+const STEPS = ["دا أفكر بمحلك...", "دا أختار الألوان...", "دا أكتب الكلام...", "دا أرتب الأقسام...", "باقي شوية..."];
+let spec = null, lastPrompt = "", stepTimer = null;
+async function build(prompt){
+  $("err").textContent = "";
+  $("go").disabled = true; $("building").classList.add("on");
+  let i = 0; $("stepTxt").textContent = STEPS[0];
+  stepTimer = setInterval(()=>{ i = Math.min(i+1, STEPS.length-1); $("stepTxt").textContent = STEPS[i]; }, 2200);
+  try{
+    const r = await fetch("/api/generate", { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ prompt }) });
+    const data = await r.json().catch(()=>({}));
+    if (!r.ok){
+      throw new Error({ nokey:"الخدمة بعدها تتجهز، جرب بعد شوية.", limit:"جربت هواية اليوم، ارجع بعد ساعة.", short:"اكتب أكثر عن محلك." }[data.error] || "صار خلل بسيط، جرب مرة ثانية.");
+    }
+    spec = data; lastPrompt = prompt;
+    $("preview").srcdoc = render(spec);
+    const msg = `هلو ياسر 👋\nجربت "سوّيلي موقع" وعجبني الموقع، وأريد موقع حقيقي.\n\n🏪 المحل: ${spec.name}\n📍 المنطقة: ${spec.area || "-"}\n💡 الوصف: ${prompt}`;
+    $("want").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+    $("result").classList.add("on");
+    setTimeout(()=>$("result").scrollIntoView({behavior:"smooth", block:"start"}), 100);
+  }catch(e){
+    $("err").textContent = e.message || "صار خلل، جرب مرة ثانية.";
+  }finally{
+    clearInterval(stepTimer); $("go").disabled = false; $("building").classList.remove("on");
+  }
+}
+$("go").onclick = () => {
+  const p = $("prompt").value.trim();
+  if (p.length < 8){ $("err").textContent = "احچيلي شوية أكثر عن محلك."; $("prompt").focus(); return; }
+  build(p);
+};
+$("prompt").addEventListener("input", ()=>$("err").textContent="");
+$("again").onclick = () => build(lastPrompt + " (سوّي شكل وألوان مختلفة تماماً عن قبل)");
+$("edit").onclick = () => { window.scrollTo({top: $("askPaper").offsetTop - 40, behavior:"smooth"}); setTimeout(()=>$("prompt").focus({preventScroll:true}), 500); };
+document.querySelector(".toggle").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll(".toggle button").forEach(x=>x.setAttribute("aria-pressed", x===b ? "true" : "false"));
+  $("frame").className = "frame " + b.dataset.v;
+};
+</script>
+</body>
+</html>
