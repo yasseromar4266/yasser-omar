@@ -6,7 +6,7 @@
 
 export const config = { maxDuration: 60 };
 
-const MODELS = ["gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-flash-latest", "gemini-2.5-flash"];
+const MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemini-3.8-flash"];
 const hits = new Map();
 
 const KINDS = ["store", "restaurant", "service"];
@@ -111,12 +111,12 @@ export default async function handler(req, res) {
   if (prompt.length < 4) return res.status(400).json({ error: "short" });
 
   // نجرب أكثر من موديل: إذا واحد زحمة أو بطيء نروح للي بعده، وكلها لازم تخلص قبل 55 ثانية
-  let lastErr; const start = Date.now();
+  let lastErr; const errs = []; const start = Date.now();
   for (const m of MODELS) {
     const left = 55000 - (Date.now() - start);
     if (left < 6000) break;
     try { return res.status(200).json(clean(await ask(m, prompt, key, Math.min(25000, left - 1000)))); }
-    catch (e) { lastErr = e; }
+    catch (e) { lastErr = e; errs.push(m + ": " + String(e?.message || e).slice(0, 120)); }
   }
-  return res.status(502).json({ error: "ai", detail: String(lastErr?.message || "").slice(0, 200) });
+  return res.status(502).json({ error: "ai", detail: errs.join(" || ") });
 }
