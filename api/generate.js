@@ -97,10 +97,54 @@ function clean(spec) {
   return spec;
 }
 
+/* ===== نسخة احتياطية بدون ذكاء: إذا Gemini زحمة نبني الموقع من قوالب جاهزة ===== */
+const FB = [
+  { re:/حلويات|كيك|معجنات|حلو|بقلاوة|كنافة/, kind:"restaurant", label:"حلويات", tag:"حلاوة تنعمل كل يوم بإيدينا", font:"marhey",
+    sections:[["الأكثر طلباً",[["كيك عيد ميلاد","طبقات طرية وكريمة طازجة",25000],["بقلاوة بالفستق","هشة ومحلّاة بالقطر",15000],["كنافة نابلسية","حارة وتنعمل قدامك",8000]]],["على الطلب",[["صينية عزايم","تشكيلة حلويات للضيوف",40000],["كب كيك","ألوان ونكهات حسب طلبك",2000]]]] },
+  { re:/كافيه|قهوة|كوفي|مقهى/, kind:"restaurant", label:"كافيه", tag:"قعدة حلوة وقهوة تعدّل المزاج", font:"rubik",
+    sections:[["المشروبات",[["لاتيه","إسبريسو وحليب مخفوق",4000],["قهوة عربية","بالهيل وتنصب حارة",2500],["موهيتو","منعش ويبرّد القلب",4500]]],["وياها",[["كرواسون","طازج كل صبح",2500],["تشيز كيك","بصوص التوت",5000]]]] },
+  { re:/مطعم|اكل|أكل|مشويات|فلافل|شاورما|برگر|برجر|بيتزا|كباب|سمك|مسگوف/, kind:"restaurant", label:"مطعم", tag:"طعم البيت بس أطيب", font:"lalezar",
+    sections:[["الأطباق",[["كباب عراقي","على الفحم ويا خبز حار",8000],["تكة دجاج","متبلة بخلطتنا الخاصة",7000],["قوزي","رز ولحم وكرزات",12000]]],["المقبلات",[["حمص","بزيت الزيتون",2000],["سلطة","خضرة طازجة",1500]]]] },
+  { re:/صالون|حلاق|حلاقة|تجميل|مكياج|ميك اب|بيوتي/, kind:"service", label:"صالون", tag:"طلّة تفرق وتنشاف من بعيد", font:"elmessiri",
+    sections:[["الخدمات",[["قص شعر","حسب شكل وجهك",7000],["تحديد لحية","خطوط نظيفة ومرتبة",4000],["عناية بالبشرة","تنظيف وترطيب",15000]]]] },
+  { re:/مدرس|تدريس|دروس|خصوصي|معهد|كورس|دورة/, kind:"service", label:"دروس", tag:"نفهمك الدرس من أوله لآخره", font:"tajawal",
+    sections:[["الدروس",[["درس خصوصي","حصة فردية بالبيت أو أونلاين",25000],["مراجعة امتحانات","حل أسئلة وزارية",20000],["مجموعة صغيرة","4 طلاب بالحصة",15000]]]] },
+  { re:/تصليح|صيانة|كهربائي|سباك|موبايلات|تبريد|ورشة/, kind:"service", label:"صيانة", tag:"نصلحها صح من أول مرة", font:"rubik",
+    sections:[["الخدمات",[["فحص وتشخيص","نعرف العطل بدقايق",5000],["تصليح","قطع أصلية ويا ضمان",null],["زيارة للبيت","نوصلك وين ما تكون",10000]]]] },
+  { re:/ملابس|ازياء|أزياء|عبايات|احذية|أحذية|اطفال|أطفال|بوتيك/, kind:"store", label:"ملابس", tag:"موديلات جديدة كل أسبوع", font:"elmessiri",
+    sections:[["وصل جديد",[["طقم صيفي","قطن ناعم ومريح",25000],["جاكيت","يناسب كل الطلعات",35000],["حذاء رياضي","خفيف ومريح",30000]]],["عروض",[["قطعتين بسعر وحدة","لفترة محدودة",null]]]] },
+];
+const PALETTES = [
+  { bg:"#fbf6ee", surface:"#ffffff", ink:"#2b1d14", accent:"#c2410c", accentInk:"#ffffff" },
+  { bg:"#f1f7f4", surface:"#ffffff", ink:"#12312a", accent:"#0f766e", accentInk:"#ffffff" },
+  { bg:"#fff8e7", surface:"#ffffff", ink:"#2a2112", accent:"#b45309", accentInk:"#ffffff" },
+  { bg:"#f4f1ea", surface:"#fffdf8", ink:"#1f2933", accent:"#1d4ed8", accentInk:"#ffffff" },
+  { bg:"#fdf2f2", surface:"#ffffff", ink:"#3b1219", accent:"#be123c", accentInk:"#ffffff" },
+];
+function fallback(prompt) {
+  const t = FB.find(k => k.re.test(prompt)) || { kind:"store", label:"محل", tag:"كل اللي تحتاجه بمكان واحد", font:"tajawal",
+    sections:[["منتجاتنا",[["منتج مميز","جودة تستاهل",10000],["الأكثر مبيعاً","الكل يطلبه",15000],["جديدنا","وصل هالأسبوع",12000]]]] };
+  const nm = prompt.match(/(?:اسمه|اسمها|اسم المحل|اسمنا)\s*[:"«]?\s*([^\s،,.\n"»]+(?:\s+[^\s،,.\n"»]+)?)/);
+  const ar = prompt.match(/(?:ب|في|بمنطقة|منطقة)\s*(المنصور|الكرادة|زيونة|الجادرية|الأعظمية|الاعظمية|الكاظمية|الدورة|الشعب|البياع|اليرموك|العامرية|الحارثية|السيدية|الغدير|بغداد الجديدة|البصرة|أربيل|اربيل|النجف|كربلاء|الموصل|الحلة|[^\s،,.]+ية)/);
+  const area = ar ? ar[1] : "بغداد";
+  const name = nm ? nm[1] : `${t.label} ${area}`;
+  const pal = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+  return {
+    kind: t.kind, name, name_en: "", tagline: t.tag,
+    hero: `${t.tag}. تعال زورنا أو اطلب بالواتساب.`,
+    about: prompt.length > 30 ? prompt.slice(0, 220) : `${name} بمنطقة ${area}، نشتغل بحب ونهتم بكل زبون كأنه من أهل البيت.`,
+    area, hours: "كل يوم من 10 الصبح لحد 11 بالليل", cta: t.kind === "service" ? "احجز موعد" : "اطلب هسه",
+    palette: pal, font: t.font,
+    sections: t.sections.map(([title, items]) => ({ title, items: items.map(([n, d, p]) => ({ name:n, desc:d, price: p ? p.toLocaleString("en-US") + " د.ع" : "حسب الطلب" })) })),
+    highlights: ["أسعار مناسبة", "توصيل لكل مناطق " + (/(البصرة|أربيل|اربيل|النجف|كربلاء|الموصل|الحلة)/.test(area) ? area : "بغداد"), "نرد عالواتساب بسرعة"],
+    fallback: true,
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.status(503).json({ error: "nokey" });
+  if (!key) return res.status(200).json(clean(fallback(String((req.body||{}).prompt||""))));
 
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0] || "x";
   const now = Date.now(), list = (hits.get(ip) || []).filter(t => now - t < 60 * 60_000);
@@ -112,19 +156,21 @@ export default async function handler(req, res) {
 
   // نجرب أكثر من موديل، ونعيد المحاولة إذا Gemini زحمة، وكلها لازم تخلص قبل 55 ثانية
   const errs = []; const start = Date.now(); let busy = false;
-  for (let round = 0; round < 4; round++) {
+  for (let round = 0; round < 2; round++) {
     for (const m of MODELS) {
-      const left = 55000 - (Date.now() - start);
-      if (left < 6000) break;
-      try { return res.status(200).json(clean(await ask(m, prompt, key, Math.min(25000, left - 1000)))); }
+      const left = 30000 - (Date.now() - start);
+      if (left < 5000) break;
+      try { return res.status(200).json(clean(await ask(m, prompt, key, Math.min(15000, left - 500)))); }
       catch (e) {
         const msg = String(e?.message || e);
         if (/high demand|overloaded|503|UNAVAILABLE|429|quota/i.test(msg) || e?.status === 503 || e?.status === 429) busy = true;
         errs.push(m + ": " + msg.slice(0, 120));
       }
     }
-    await new Promise(r => setTimeout(r, 1500 + round * 1500));
+    if (30000 - (Date.now() - start) < 8000) break;
+    await new Promise(r => setTimeout(r, 1500));
   }
-  if (busy) return res.status(503).json({ error: "busy", detail: errs.slice(-3).join(" || ") });
-  return res.status(502).json({ error: "ai", detail: errs.join(" || ") });
+  // الذكاء ما رد؟ نطلع نسخة من القوالب حتى الزائر ما يطلع إيده فارغة
+  res.setHeader("x-ai-detail", encodeURIComponent(errs.slice(-2).join(" | ").slice(0, 300)));
+  return res.status(200).json(clean(fallback(prompt)));
 }

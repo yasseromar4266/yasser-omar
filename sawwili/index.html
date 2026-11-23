@@ -306,6 +306,7 @@ async function build(prompt){
     const msg = `هلو ياسر 👋\nجربت "سوّيلي موقع" وعجبني الموقع، وأريد موقع حقيقي.\n\n🏪 المحل: ${spec.name}\n📍 المنطقة: ${spec.area || "-"}\n💡 الوصف: ${prompt}`;
     $("want").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
     $("result").classList.add("on");
+    if (spec.fallback) $("err").textContent = "هاي نسخة سريعة لأن الذكاء الاصطناعي عليه زحمة هسه. اضغط «سوّي شكل ثاني» بعد دقيقة وتطلعلك نسخة أذكى.";
     setTimeout(()=>$("result").scrollIntoView({behavior:"smooth", block:"start"}), 100);
   }catch(e){
     $("err").textContent = e.message || "صار خلل، جرب مرة ثانية.";
