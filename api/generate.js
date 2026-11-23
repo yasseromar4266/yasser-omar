@@ -6,7 +6,7 @@
 
 export const config = { maxDuration: 60 };
 
-const MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest"];
+const MODELS = ["gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-flash-latest", "gemini-2.5-flash"];
 const hits = new Map();
 
 const KINDS = ["store", "restaurant", "service"];
@@ -63,9 +63,9 @@ const SYSTEM = `إنت مصمم مواقع عراقي. الزبون راح يو�
 - font: اختار خط يناسب: lalezar للشعبي القوي، elmessiri للأنيق، rubik للحديث، amiri للفخم الكلاسيكي، marhey للمرح، tajawal للبسيط.
 - لا تكتب أي شي غير مناسب أو مسيء، وإذا الطلب مو عن محل أو شغل، سوي موقع لمحل عراقي عادي.`;
 
-async function ask(model, prompt, key) {
+async function ask(model, prompt, key, ms) {
   const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 40000);
+  const t = setTimeout(() => ctrl.abort(), ms);
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: "POST",
@@ -74,7 +74,7 @@ async function ask(model, prompt, key) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM }] },
         contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.9, maxOutputTokens: 3000, responseMimeType: "application/json", responseSchema: SCHEMA },
+        generationConfig: { temperature: 0.9, maxOutputTokens: 2200, responseMimeType: "application/json", responseSchema: SCHEMA },
       }),
     });
     const data = await r.json().catch(() => ({}));
@@ -110,9 +110,12 @@ export default async function handler(req, res) {
   const prompt = String((req.body || {}).prompt || "").trim().slice(0, 600);
   if (prompt.length < 4) return res.status(400).json({ error: "short" });
 
-  let lastErr;
+  // نجرب أكثر من موديل: إذا واحد زحمة أو بطيء نروح للي بعده، وكلها لازم تخلص قبل 55 ثانية
+  let lastErr; const start = Date.now();
   for (const m of MODELS) {
-    try { return res.status(200).json(clean(await ask(m, prompt, key))); }
+    const left = 55000 - (Date.now() - start);
+    if (left < 6000) break;
+    try { return res.status(200).json(clean(await ask(m, prompt, key, Math.min(25000, left - 1000)))); }
     catch (e) { lastErr = e; }
   }
   return res.status(502).json({ error: "ai", detail: String(lastErr?.message || "").slice(0, 200) });
