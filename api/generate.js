@@ -131,7 +131,7 @@ function fallback(prompt) {
   const pal = PALETTES[Math.floor(Math.random() * PALETTES.length)];
   return {
     kind: t.kind, name, name_en: "", tagline: t.tag,
-    hero: `${t.tag}. تعال زورنا أو اطلب بالواتساب.`,
+    hero: `أهلاً بيكم ب${name}`,
     about: prompt.length > 30 ? prompt.slice(0, 220) : `${name} بمنطقة ${area}، نشتغل بحب ونهتم بكل زبون كأنه من أهل البيت.`,
     area, hours: "كل يوم من 10 الصبح لحد 11 بالليل", cta: t.kind === "service" ? "احجز موعد" : "اطلب هسه",
     palette: pal, font: t.font,
